@@ -440,7 +440,20 @@ export async function infer<OutputSchema extends z.AnyZodObject>({
             avatarUrl: undefined
         };
 
-        const userConfig = await getUserConfigurableSettings(env, metadata.userId, { security: {}, 	globalMessaging: {}})
+        const userConfig = await getUserConfigurableSettings(env, metadata.userId, {
+																					  security: {
+																					    rateLimit: {
+																					      enabled: true,
+																					      maxRequests: 100,
+																					      windowMs: 60000
+																					    }
+																					  },
+																					  globalMessaging: {
+																					    globalUserMessage: "",
+																					    changeLogs: []
+																					  }
+																					});
+
 
         // Maybe in the future can expand using config object for other stuff like global model configs?
         await RateLimitService.enforceLLMCallsRateLimit(env, userConfig.security.rateLimit, authUser)
