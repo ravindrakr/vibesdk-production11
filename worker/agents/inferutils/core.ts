@@ -18,6 +18,7 @@ import { ToolCallResult, ToolDefinition } from '../tools/types';
 import { AgentActionKey, AIModels, InferenceMetadata } from './config.types';
 // import { SecretsService } from '../../database';
 import { RateLimitService } from '../../services/rate-limit/rateLimits';
+import { DEFAULT_RATE_LIMIT_SETTINGS } from '../../services/rate-limit/config';
 import { AuthUser } from '../../types/auth-types';
 import { getUserConfigurableSettings } from '../../config';
 import { SecurityError, RateLimitExceededError } from 'shared/types/errors';
@@ -441,18 +442,14 @@ export async function infer<OutputSchema extends z.AnyZodObject>({
         };
 
         const userConfig = await getUserConfigurableSettings(env, metadata.userId, {
-																					  security: {
-																					    rateLimit: {
-																					      enabled: true,
-																					      maxRequests: 100,
-																					      windowMs: 60000
-																					    }
-																					  },
-																					  globalMessaging: {
-																					    globalUserMessage: "",
-																					    changeLogs: []
-																					  }
-																					});
+            security: {
+                rateLimit: DEFAULT_RATE_LIMIT_SETTINGS
+            },
+            globalMessaging: {
+                globalUserMessage: "",
+                changeLogs: ""
+            }
+        });
 
 
         // Maybe in the future can expand using config object for other stuff like global model configs?
